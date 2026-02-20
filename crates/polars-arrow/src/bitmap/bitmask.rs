@@ -1,5 +1,5 @@
 #[cfg(feature = "simd")]
-use std::simd::{LaneCount, Mask, MaskElement, SupportedLaneCount};
+use std::simd::{Mask, MaskElement};
 
 use polars_utils::slice::load_padded_le_u64;
 
@@ -243,12 +243,11 @@ impl<'a> BitMask<'a> {
     pub fn get_simd<T, const N: usize>(&self, idx: usize) -> Mask<T, N>
     where
         T: MaskElement,
-        LaneCount<N>: SupportedLaneCount,
     {
         // We don't support 64-lane masks because then we couldn't load our
         // bitwise mask as a u64 and then do the byteshift on it.
 
-        let lanes = LaneCount::<N>::BITMASK_LEN;
+        let lanes = N.div_ceil(8);
         assert!(lanes < 64);
 
         let start_byte_idx = (self.offset + idx) / 8;

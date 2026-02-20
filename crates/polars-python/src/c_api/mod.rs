@@ -291,6 +291,8 @@ pub fn _polars_runtime(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
         .unwrap();
     m.add_wrapped(wrap_pyfunction!(functions::thread_pool_size))
         .unwrap();
+    m.add_wrapped(wrap_pyfunction!(functions::jemalloc_stats))
+        .unwrap();
     m.add_wrapped(wrap_pyfunction!(functions::enable_string_cache))
         .unwrap();
     m.add_wrapped(wrap_pyfunction!(functions::disable_string_cache))

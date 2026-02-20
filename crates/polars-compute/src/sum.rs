@@ -1,6 +1,6 @@
 use std::ops::Add;
 #[cfg(feature = "simd")]
-use std::simd::prelude::*;
+use std::simd::{prelude::*, Select};
 
 use arrow::array::{Array, PrimitiveArray};
 use arrow::bitmap::bitmask::BitMask;
@@ -98,7 +98,7 @@ where
             .chunks_exact(STRIPE)
             .enumerate()
             .map(|(i, a)| {
-                let m: Mask<_, STRIPE> = main_mask.get_simd(i * STRIPE);
+                let m: Mask<i8, STRIPE> = main_mask.get_simd(i * STRIPE);
                 m.select(Simd::from_slice(a), zero)
             })
             .fold(zero, |a, b| {
